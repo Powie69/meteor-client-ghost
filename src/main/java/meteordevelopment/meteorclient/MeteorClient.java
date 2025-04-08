@@ -183,7 +183,6 @@ public class MeteorClient implements ClientModInitializer {
             if (wasWidgetScreen) mc.options.hudHidden = wasHudHiddenRoot;
             wasHudHiddenRoot = mc.options.hudHidden;
         }
-
         wasWidgetScreen = event.screen instanceof WidgetScreen;
     }
 
