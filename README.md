@@ -8,7 +8,7 @@
 
 ## Installation
 
-### [Donwload page](https://github.com/Powie69/meteor-client-ghost/releases/)
+### [Download page](https://github.com/Powie69/meteor-client-ghost/releases/)
 
 This mod can be installed just like any other Fabric mod. [Installation guide here](https://meteorclient.com/faq/installation)
 
