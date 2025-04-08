@@ -12,11 +12,13 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import meteordevelopment.meteorclient.utils.misc.Keybind;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class Config extends System<Config> {
     public final Settings settings = new Settings();
 
     private final SettingGroup sgVisual = settings.createGroup("Visual");
+    private final SettingGroup sgKeybinds = settings.createGroup("Keybinds");
     private final SettingGroup sgModules = settings.createGroup("Modules");
     private final SettingGroup sgChat = settings.createGroup("Chat");
     private final SettingGroup sgMisc = settings.createGroup("Misc");
@@ -60,14 +63,14 @@ public class Config extends System<Config> {
     public final Setting<Boolean> titleScreenCredits = sgVisual.add(new BoolSetting.Builder()
         .name("title-screen-credits")
         .description("Show Meteor credits on title screen")
-        .defaultValue(true)
+        .defaultValue(false)
         .build()
     );
 
     public final Setting<Boolean> titleScreenSplashes = sgVisual.add(new BoolSetting.Builder()
         .name("title-screen-splashes")
         .description("Show Meteor splash texts on title screen")
-        .defaultValue(true)
+        .defaultValue(false)
         .build()
     );
 
@@ -94,6 +97,22 @@ public class Config extends System<Config> {
         .description("The color used to show friends.")
         .defaultValue(new SettingColor(0, 255, 180))
         .build()
+    );
+
+    // Keybindings
+
+    public final Setting<Keybind> openGui = sgKeybinds.add(new KeybindSetting.Builder()
+        .name("open-gui")
+        .description("The keybind to open the GUI.")
+        .defaultValue(Keybind.fromKey(GLFW.GLFW_KEY_RIGHT_SHIFT))
+        .build()
+    );
+
+    public final Setting<Keybind> openCommand = sgKeybinds.add(new KeybindSetting.Builder()
+            .name("open-commands")
+            .description("The keybind to open the commands menu.")
+            .defaultValue(Keybind.fromKey(GLFW.GLFW_KEY_PERIOD))
+            .build()
     );
 
     // Modules
@@ -131,7 +150,7 @@ public class Config extends System<Config> {
     public final Setting<Boolean> chatFeedback = sgChat.add(new BoolSetting.Builder()
         .name("chat-feedback")
         .description("Sends chat feedback when meteor performs certain actions.")
-        .defaultValue(true)
+        .defaultValue(false)
         .build()
     );
 

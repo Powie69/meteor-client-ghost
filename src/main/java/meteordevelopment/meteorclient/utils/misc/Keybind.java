@@ -7,7 +7,9 @@ package meteordevelopment.meteorclient.utils.misc;
 
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.input.Input;
+import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
 
 import java.util.Objects;
 
@@ -86,6 +88,8 @@ public class Keybind implements ISerializable<Keybind>, ICopyable<Keybind> {
         if (!hasMods()) return this.value == value;
         return this.value == value && this.modifiers == modifiers;
     }
+
+
 
     public boolean isPressed() {
         return isKey ? modifiersPressed() && Input.isKeyPressed(value) : Input.isButtonPressed(value);

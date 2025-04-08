@@ -26,7 +26,6 @@ import meteordevelopment.meteorclient.utils.ReflectInit;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.misc.Version;
 import meteordevelopment.meteorclient.utils.misc.input.KeyAction;
-import meteordevelopment.meteorclient.utils.misc.input.KeyBinds;
 import meteordevelopment.meteorclient.utils.network.OnlinePlayers;
 import meteordevelopment.orbit.EventBus;
 import meteordevelopment.orbit.EventHandler;
@@ -143,21 +142,21 @@ public class MeteorClient implements ClientModInitializer {
 
     @EventHandler
     private void onTick(TickEvent.Post event) {
-        if (mc.currentScreen == null && mc.getOverlay() == null && KeyBinds.OPEN_COMMANDS.wasPressed()) {
+        if (mc.currentScreen == null && mc.getOverlay() == null && Config.get().openCommand.get().isPressed()) {
             mc.setScreen(new ChatScreen(Config.get().prefix.get()));
         }
     }
 
     @EventHandler
     private void onKey(KeyEvent event) {
-        if (event.action == KeyAction.Press && KeyBinds.OPEN_GUI.matchesKey(event.key, 0)) {
+        if (event.action == KeyAction.Press && Config.get().openGui.get().getValue() == event.key) {
             toggleGui();
         }
     }
 
     @EventHandler
     private void onMouseButton(MouseButtonEvent event) {
-        if (event.action == KeyAction.Press && KeyBinds.OPEN_GUI.matchesMouse(event.button)) {
+        if (event.action == KeyAction.Press && Config.get().openGui.get().getValue() == event.button) {
             toggleGui();
         }
     }
