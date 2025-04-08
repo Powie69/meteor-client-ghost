@@ -31,8 +31,12 @@ jobs:
       - name: Build
         run: ./gradlew build
 
+      - name: Rename and Upload Artifact
+        run: mv build/libs/meteor-client-1.21.4-local.jar build/libs/meteor-client-1.21.4-${{ github.sha.substring(0,7) }}.jar
+        shell: bash
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build
-          path: build/libs/
+          name: meteor-client-1.21.4-${{ github.sha.substring(0,7) }}
+          path: build/libs/meteor-client-1.21.4-${{ github.sha.substring(0,7) }}.jar
