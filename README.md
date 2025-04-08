@@ -12,11 +12,11 @@
 
 This mod can be installed just like any other Fabric mod. [Installation guide here](https://meteorclient.com/faq/installation)
 
-If you don't trust this fork you can see everything I've change form the original from this [page](https://github.com/Powie69/meteor-client-ghost/commits/master/?author=Powie69)
+If you don't trust this fork you can see everything I've change from the original on this [page](https://github.com/Powie69/meteor-client-ghost/commits/master/?author=Powie69)
 
 If you don't trust the `.jar` in the releases. you can build/compile this from the source. [Here's a guide on how to build/compile Mods](https://youtu.be/5dEgxdLUQoI) 
 
-## What's the difference in this fork from the [original](https://github.com/MeteorDevelopment/meteor-client)?
+## How is this fork different from the [original](https://github.com/MeteorDevelopment/meteor-client)?
 
 - Removes the key bind options in the vanila minecraft options page and moves it in the config tab
 - Adds option to hide the buttons and text added by meteor in the multiplayer selection page
