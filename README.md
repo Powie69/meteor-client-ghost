@@ -10,7 +10,7 @@
 
 ### [Download page](https://github.com/Powie69/meteor-client-ghost/releases/)
 
-This mod can be installed just like any other Fabric mod. [Installation guide here](https://meteorclient.com/faq/installation)
+This mod can be installed just like any other Fabric mod.
 
 If you don't trust this fork you can see everything I've change from the original on this [page](https://github.com/Powie69/meteor-client-ghost/commits/master/?author=Powie69)
 
