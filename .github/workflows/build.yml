@@ -14,6 +14,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install Java (for local act runner)
+        if: env.ACT
+        run: |
+          apt-get update
+          apt-get install -y openjdk-21-jdk
+          echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
+          echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -31,12 +39,18 @@ jobs:
       - name: Build
         run: ./gradlew build
 
-      - name: Rename and Upload Artifact
-        run: mv build/libs/meteor-client-1.21.4-local.jar build/libs/meteor-client-1.21.4-${{ github.sha.substring(0,7) }}.jar
-        shell: bash
+      - name: Rename JAR with Commit SHA
+        id: rename
+        run: |
+          VERSION=$(./gradlew -q properties | grep "^version:" | awk '{print $2}')
+          SHA=$(git rev-parse --short HEAD)
+          ORIG_JAR="build/libs/meteor-client-${VERSION}-local.jar"
+          NEW_JAR="build/libs/meteor-client-${VERSION}-${SHA}.jar"
+          mv "$ORIG_JAR" "$NEW_JAR"
+          echo "renamed_jar=$NEW_JAR" >> $GITHUB_OUTPUT
 
-      - name: Upload Artifact
+      - name: Upload Renamed JAR
         uses: actions/upload-artifact@v4
         with:
-          name: meteor-client-1.21.4-${{ github.sha.substring(0,7) }}
-          path: build/libs/meteor-client-1.21.4-${{ github.sha.substring(0,7) }}.jar
+          name: meteor-client-jar-${{ steps.rename.outputs.renamed_jar }}
+          path: ${{ steps.rename.outputs.renamed_jar }}

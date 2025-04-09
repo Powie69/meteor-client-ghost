@@ -83,21 +83,21 @@ public class Config extends System<Config> {
 
     public final Setting<Boolean> accountsButton = sgVisual.add(new BoolSetting.Builder()
         .name("accounts-button")
-        .description("Show accounts button on multiplayer screen")
+        .description("Show accounts button on multiplayer screen.")
         .defaultValue(false)
         .build()
     );
 
     public final Setting<Boolean> accountStatus = sgVisual.add(new BoolSetting.Builder()
         .name("account-status")
-        .description("Show account status on multiplayer screen")
+        .description("Show account status on multiplayer screen.")
         .defaultValue(false)
         .build()
     );
 
     public final Setting<Boolean> proxyStatus = sgVisual.add(new BoolSetting.Builder()
         .name("proxy-status")
-        .description("Show proxy status on multiplayer screen")
+        .description("Show proxy status on multiplayer screen.")
         .defaultValue(false)
         .build()
     );
