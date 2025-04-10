@@ -14,14 +14,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install Java (for local act runner)
-        if: env.ACT
-        run: |
-          apt-get update
-          apt-get install -y openjdk-21-jdk
-          echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
-          echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
-
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -36,21 +28,30 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: fuck permissions
+        if: env.ACT
+        run: chmod +x ./gradlew
+
       - name: Build
         run: ./gradlew build
 
-      - name: Rename JAR with Commit SHA
+      - name: Rename JAR
         id: rename
         run: |
-          VERSION=$(./gradlew -q properties | grep "^version:" | awk '{print $2}')
+          VERSION=$(./gradlew properties | grep "^minecraft_version:" | awk '{print $2}')
           SHA=$(git rev-parse --short HEAD)
-          ORIG_JAR="build/libs/meteor-client-${VERSION}-local.jar"
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
           NEW_JAR="build/libs/meteor-client-${VERSION}-${SHA}.jar"
-          mv "$ORIG_JAR" "$NEW_JAR"
+          mv "build/libs/meteor-client-${VERSION}-local.jar" "$NEW_JAR"
           echo "renamed_jar=$NEW_JAR" >> $GITHUB_OUTPUT
 
-      - name: Upload Renamed JAR
+      - name: Get JAR SHA256
+        run: echo "jar_sha256=$(sha256sum "${{ steps.rename.outputs.renamed_jar }}" | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+
+      - name: Upload JAR
+        if: env.ACT != 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: meteor-client-jar-${{ steps.rename.outputs.renamed_jar }}
+          name: meteor-client-${{ steps.rename.outputs.version }}-${{ github.sha }}
           path: ${{ steps.rename.outputs.renamed_jar }}
