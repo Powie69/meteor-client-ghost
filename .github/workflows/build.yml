@@ -47,7 +47,7 @@ jobs:
           echo "renamed_jar=$NEW_JAR" >> $GITHUB_OUTPUT
 
       - name: Get JAR SHA256
-        run: echo "jar_sha256=$(sha256sum "${{ steps.rename.outputs.renamed_jar }}" | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+        run: sha256sum "${{ steps.rename.outputs.renamed_jar }}" | awk '{ print "SHA256:", $1 }'
 
       - name: Upload JAR
         if: env.ACT != 'true'
