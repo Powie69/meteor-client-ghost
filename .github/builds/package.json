@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "get_number": "node get_number.js",
+    "get_version": "node mc_version.js",
     "webhook": "node index.js"
   }
 }

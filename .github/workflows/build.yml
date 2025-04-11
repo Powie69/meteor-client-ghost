@@ -28,26 +28,39 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Set up Node JS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Get current build number & mc version
+        id: build-number
+        run: |
+          cd ./.github/builds
+          npm ci
+          npm run --silent get_number >> $GITHUB_OUTPUT
+
       - name: fuck permissions
         if: env.ACT
         run: chmod +x ./gradlew
 
       - name: Build
-        run: ./gradlew build
+        run: ./gradlew build -Pbuild_number=${{ steps.build-number.outputs.number }}
 
       - name: Rename JAR
         id: rename
         run: |
           VERSION=$(./gradlew properties | grep "^minecraft_version:" | awk '{print $2}')
           SHA=$(git rev-parse --short HEAD)
-          echo "sha=$SHA" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          NEW_JAR="build/libs/meteor-client-${VERSION}-${SHA}.jar"
-          mv "build/libs/meteor-client-${VERSION}-local.jar" "$NEW_JAR"
+          NEW_JAR="build/libs/meteor-client-${{steps.build-number.outputs.number}}_${SHA}.jar"
+          mv "build/libs/meteor-client-${VERSION}-${{steps.build-number.outputs.number}}-all.jar" "$NEW_JAR"
           echo "renamed_jar=$NEW_JAR" >> $GITHUB_OUTPUT
 
       - name: Get JAR SHA256
+        id: sha
         run: |
+          echo "$(sha256sum '${{ steps.rename.outputs.renamed_jar }}' | awk '{print $1}')"
           echo "sha256_output=SHA256: $(sha256sum '${{ steps.rename.outputs.renamed_jar }}' | awk '{print $1}')" >> $GITHUB_OUTPUT      
 
       - name: Upload JAR
@@ -57,34 +70,24 @@ jobs:
           name: meteor-client-${{ steps.rename.outputs.version }}-${{ steps.rename.outputs.sha }}
           path: ${{ steps.rename.outputs.renamed_jar }}
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - name: Set up Node JS
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Get current build number
-        id: build-number
-        run: |
-          cd ./.github/builds
-          npm ci
-          npm run --silent get_number >> $GITHUB_OUTPUT
-
       - name: Create Release
         if: env.ACT != 'true'
         uses: softprops/action-gh-release@v1
         with:
-          name: Meteor Client ${{ needs.build.outputs.version }}-${{ steps.build-number.outputs.number }}
-          files: ../../${{ needs.build.outputs.renamed_jar }}
+          name: Meteor Client ${{ steps.build.outputs.version }}-${{steps.build-number.outputs.number}}
+          body: |
+            <h1 align="center"> Meteor Client [${{ steps.build.outputs.version }} - #&#8203;${{ steps.build-number.outputs.number }}] </h1>
+            
+            ## Changelog
+
+            - []():
+            
+            ## SHA256 checksum:
+
+            ```
+            ${{steps.sha.outputs.sha256_output}}
+            ```
+          files: ${{ steps.rename.outputs.renamed_jar }}
           draft: true
           prerelease: false
         env:

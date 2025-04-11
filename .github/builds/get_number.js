@@ -3,6 +3,9 @@
  * Copyright (c) Meteor Development.
  */
 
+
+// bruh just do 'VERSION=$(./gradlew properties | grep "^minecraft_version:" | awk '{print $2}')'
+
 import { getMcVersion } from "./mc_version.js"
 
 const mcVersion = await getMcVersion();
