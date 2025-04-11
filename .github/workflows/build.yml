@@ -62,11 +62,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node JS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Get current build number
+        id: build-number
+        run: |
+          cd ./.github/builds
+          npm ci
+          npm run --silent get_number >> $GITHUB_OUTPUT
+
       - name: Create Release
         if: env.ACT != 'true'
         uses: softprops/action-gh-release@v1
         with:
-          name: Meteor Client ${{ needs.build.outputs.version }}-${{ needs.build.outputs.sha }}
+          name: Meteor Client ${{ needs.build.outputs.version }}-${{ steps.build-number.outputs.number }}
           files: ${{ needs.build.outputs.renamed_jar }}
           draft: true
           prerelease: false
