@@ -47,7 +47,8 @@ jobs:
           echo "renamed_jar=$NEW_JAR" >> $GITHUB_OUTPUT
 
       - name: Get JAR SHA256
-        run: sha256sum "${{ steps.rename.outputs.renamed_jar }}" | awk '{ print "SHA256:", $1 }'
+        run: |
+          echo "sha256_output=SHA256: $(sha256sum '${{ steps.rename.outputs.renamed_jar }}' | awk '{print $1}')" >> $GITHUB_OUTPUT      
 
       - name: Upload JAR
         if: env.ACT != 'true'
@@ -55,3 +56,19 @@ jobs:
         with:
           name: meteor-client-${{ steps.rename.outputs.version }}-${{ steps.rename.outputs.sha }}
           path: ${{ steps.rename.outputs.renamed_jar }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create Release
+        if: env.ACT != 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Meteor Client ${{ needs.build.outputs.version }}-${{ needs.build.outputs.sha }}
+          files: ${{ needs.build.outputs.renamed_jar }}
+          draft: true
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
