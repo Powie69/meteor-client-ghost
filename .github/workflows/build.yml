@@ -84,7 +84,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: Meteor Client ${{ needs.build.outputs.version }}-${{ steps.build-number.outputs.number }}
-          files: ${{ needs.build.outputs.renamed_jar }}
+          files: ../../${{ needs.build.outputs.renamed_jar }}
           draft: true
           prerelease: false
         env:
