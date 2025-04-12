@@ -61,13 +61,13 @@ jobs:
         id: sha
         run: |
           echo "$(sha256sum '${{ steps.rename.outputs.renamed_jar }}' | awk '{print $1}')"
-          echo "sha256_output=SHA256: $(sha256sum '${{ steps.rename.outputs.renamed_jar }}' | awk '{print $1}')" >> $GITHUB_OUTPUT      
+          echo "sha256_output=: $(sha256sum '${{ steps.rename.outputs.renamed_jar }}' | awk '{print $1}')" >> $GITHUB_OUTPUT      
 
       - name: Upload JAR
         if: env.ACT != 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: meteor-client-${{ steps.rename.outputs.version }}-${{ steps.rename.outputs.sha }}
+          name: meteor-client-${{ steps.build-number.outputs.version }}-${{ steps.rename.outputs.sha }}
           path: ${{ steps.rename.outputs.renamed_jar }}
 
       - name: Create Release
@@ -80,7 +80,7 @@ jobs:
             
             ## Changelog
 
-            - []():
+            - [0000000](https://example.com): 
             
             ## SHA256 checksum:
 
