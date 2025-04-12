@@ -61,7 +61,7 @@ jobs:
         id: sha
         run: |
           echo "$(sha256sum '${{ steps.rename.outputs.renamed_jar }}' | awk '{print $1}')"
-          echo "sha256_output=: $(sha256sum '${{ steps.rename.outputs.renamed_jar }}' | awk '{print $1}')" >> $GITHUB_OUTPUT      
+          echo "sha256_output=$(sha256sum '${{ steps.rename.outputs.renamed_jar }}' | awk '{print $1}')" >> $GITHUB_OUTPUT      
 
       - name: Upload JAR
         if: env.ACT != 'true'
@@ -78,11 +78,11 @@ jobs:
           body: |
             <h1 align="center"> Meteor Client [${{ steps.build-number.outputs.version }} - #&#8203;${{ steps.build-number.outputs.number }}] </h1>
             
-            ## Changelog
+            ### Changelog
 
             - [0000000](https://example.com): 
             
-            ## SHA256 checksum:
+            #### SHA256 checksum:
 
             ```
             ${{steps.sha.outputs.sha256_output}}
