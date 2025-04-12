@@ -19,15 +19,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-
       - name: Set up Node JS
         uses: actions/setup-node@v4
         with:
@@ -38,7 +29,17 @@ jobs:
         run: |
           cd ./.github/builds
           npm ci
+          npm run --silent get_version >> $GITHUB_OUTPUT
           npm run --silent get_number >> $GITHUB_OUTPUT
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
 
       - name: fuck permissions
         if: env.ACT
@@ -50,11 +51,10 @@ jobs:
       - name: Rename JAR
         id: rename
         run: |
-          VERSION=$(./gradlew properties | grep "^minecraft_version:" | awk '{print $2}')
+          echo ${{steps.build-number.outputs.version}}
           SHA=$(git rev-parse --short HEAD)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          NEW_JAR="build/libs/meteor-client-${{steps.build-number.outputs.number}}_${SHA}.jar"
-          mv "build/libs/meteor-client-${VERSION}-${{steps.build-number.outputs.number}}-all.jar" "$NEW_JAR"
+          NEW_JAR="build/libs/meteor-client-${{steps.build-number.outputs.version}}-${{steps.build-number.outputs.number}}_${SHA}.jar"
+          mv "build/libs/meteor-client-${{steps.build-number.outputs.version}}-${{steps.build-number.outputs.number}}-all.jar" "$NEW_JAR"
           echo "renamed_jar=$NEW_JAR" >> $GITHUB_OUTPUT
 
       - name: Get JAR SHA256
@@ -74,7 +74,7 @@ jobs:
         if: env.ACT != 'true'
         uses: softprops/action-gh-release@v1
         with:
-          name: Meteor Client ${{ steps.build.outputs.version }}-${{steps.build-number.outputs.number}}
+          name: Meteor Client ${{ steps.build.rename.version }}-#${{steps.build-number.outputs.number}}
           body: |
             <h1 align="center"> Meteor Client [${{ steps.build.outputs.version }} - #&#8203;${{ steps.build-number.outputs.number }}] </h1>
             
