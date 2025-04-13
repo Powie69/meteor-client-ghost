@@ -17,7 +17,7 @@ fetch("https://meteorclient.com/api/stats")
             build = parseInt(stats.builds[mcVersion])
         }
 
-        console.log("number=" + (build + 1))
+        console.log("number=" + build)
     })
     .catch(err => {
         console.log("Failed to fetch stats:")
